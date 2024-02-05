@@ -146,7 +146,7 @@ def event_update(event_id):
     return response
 
 
-@app.patch("/regions/<noc_code>")
+@app.post("/regions/<noc_code>")
 def region_update(noc_code):
     """Updates changed fields for the region.
 
