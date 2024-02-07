@@ -20,4 +20,26 @@ def test_get_regions_json(client):
     assert response.headers["Content-Type"] == "application/json"
     tonga = {'NOC': 'TGA', 'notes': None, 'region': 'Tonga'}
     assert tonga in response.json
-    
+
+def test_get_specified_region(client):
+    """
+    GIVEN a Flask test client
+    AND the 5th entry is AND,Andorra,
+    WHEN a request is made to /regions/AND
+    THEN the response json should match that for Andorra
+    AND the response status_code should be 200
+    """
+    and_json = {'NOC': 'AND', 'notes': None, 'region': 'Andorra'}
+    response = client.get("/regions/AND")
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.status_code == 200
+    assert response.json == and_json
+
+def test_get_region_not_exists(client):
+    """
+    GIVEN a Flask test client
+    WHEN a request is made for a region code that does not exist
+    THEN the response status_code should be 404 Not Found
+    """
+    response = client.get("/regions/AAA")
+    assert response.status_code == 404
