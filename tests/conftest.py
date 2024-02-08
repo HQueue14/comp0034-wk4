@@ -40,26 +40,3 @@ def app():
 def client(app):
     return app.test_client()
 
-
-@pytest.fixture()
-def new_region(app):
-    """Create a new region and add to the database.
-
-    Adds a new Region to the database and also returns the JSON for a new region.
-    """
-    new_region_json = {'NOC': 'NEW', 'notes': None, 'region': 'A new region'}
-
-    with app.app_context():
-        region_schema = RegionSchema()
-        new_region = region_schema.load(new_region_json)
-        db.session.add(new_region)
-        db.session.commit()
-
-    yield new_region_json
-
-    # Remove the region from the database at the end of the test if it still exists
-    with app.app_context():
-        region_exists = db.session.query(exists().where(Region.NOC == 'NEW')).scalar()
-        if region_exists:
-            db.session.delete(new_region)
-            db.session.commit()
